@@ -1,13 +1,9 @@
-const express = require('express');
+import express from 'express';
+import aiController from '../controllers/ai.controller.js';
+
 const router = express.Router();
 
-router.get("/get-response", (req, res) => {
+// Define the /get-response route
+router.get('/get-response', aiController.getResponse);
 
-    const prompt = req.query.prompt;
-
-    if (!prompt) {
-        return res.status(400).send("Prompt is required");
-    }
-})
-
-module.exports = router;
+export default router; // Use a default export
