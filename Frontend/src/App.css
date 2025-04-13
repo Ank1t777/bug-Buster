@@ -1,0 +1,75 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root,
+main {
+  height: 100%;
+  width: 100%;
+}
+
+main {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem;
+}
+
+main .left--panel, 
+main .right--panel {
+  height: 100%;
+  flex-basis: 50%;
+  border-radius: 0.5rem;
+}
+
+.left--panel, .right--panel, .prompt {
+  height: 100%;
+  overflow: auto;
+  padding: 1rem;
+  background-color: #282c34;
+  border-radius: 0.5rem;
+} 
+
+main .left--panel {
+  background-color:rgb(19, 18, 18);
+  position: relative;
+}
+
+.left--panel .prompt,
+.prompt pre,
+.prompt pre code {
+  height: 100%;
+  width: 100%
+}
+
+pre[class*="language-javascript"] {
+  margin: 0;
+  border-radius: 0.5rem;
+}
+
+main .left--panel .review--button {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  /* border: rgb(201, 199, 196) 1px solid; */
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: rgb(240, 169, 64);
+  font-weight: bold;
+  color: black;
+  user-select: none;
+}
+
+main .left--panel .review--button:hover {
+  background-color: white;
+  color: black;
+  cursor: pointer;
+  background-color: rgb(161, 109, 4);
+}
+
+main .right--panel {
+  background-color: rgb(25, 23, 23);
+}

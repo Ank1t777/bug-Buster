@@ -1,6 +1,6 @@
 import { generateResponse } from '../services/ai.service.js';
 
-const getResponse = async (req, res) => {
+const getReviewed  = async (req, res) => {
     console.log("Request body:", req.body);
     const prompt = req.body.prompt;
 
@@ -18,4 +18,4 @@ const getResponse = async (req, res) => {
     }
 };
 
-export default { getResponse};
+export default { getReviewed};
