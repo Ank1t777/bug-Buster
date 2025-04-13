@@ -220,7 +220,9 @@ export async function generateResponse(prompt) {
                     }
                 }
                                 \`\`\`
-                            22. automatically detect the language of the code given by the user.`
+                            22. automatically detect the language of the code given by the user.
+                            23. also give response in markdown format. with proper formatting.
+                            24. also give the response in a code block format.`
       },
     });
 
