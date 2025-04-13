@@ -1,7 +1,8 @@
 import { generateResponse } from '../services/ai.service.js';
 
 const getResponse = async (req, res) => {
-    const prompt = req.query.prompt;
+    console.log("Request body:", req.body);
+    const prompt = req.body.prompt;
 
     if (!prompt || typeof prompt !== 'string') {
       return res.status(400).send("Prompt is required");
