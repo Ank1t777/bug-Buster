@@ -54,7 +54,6 @@ main .left--panel .review--button {
   position: absolute;
   bottom: 1rem;
   right: 1rem;
-  /* border: rgb(201, 199, 196) 1px solid; */
   border-radius: 0.5rem;
   padding: 0.5rem 1rem;
   background-color: rgb(240, 169, 64);
