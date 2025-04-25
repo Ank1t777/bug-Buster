@@ -8,7 +8,7 @@ const app = express();
 
 //configuring CORS to allow cross-origin requests only from vercel
 const corsOptions = {
-    origin: 'https://bug-buster-two.vercel.app/',
+    origin: 'https://bug-buster-two.vercel.app',
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type', 'Authorization'],
 };
