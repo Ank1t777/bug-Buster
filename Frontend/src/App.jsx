@@ -19,7 +19,7 @@ function App() {
 
   async function codeReview() {
     try {
-      const responseFromServerAi = await axios.post('http://localhost:3000/ai/get-reviewed', { prompt })
+      const responseFromServerAi = await axios.post('https://bug-buster-v1.onrender.com/ai/get-reviewed', { prompt })
       console.log(responseFromServerAi.data.response);
       setResponse(responseFromServerAi.data.response);
     } catch(err) {
