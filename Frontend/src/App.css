@@ -72,3 +72,35 @@ main .left--panel .review--button:hover {
 main .right--panel {
   background-color: rgb(25, 23, 23);
 }
+
+.right--panel {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 16px;
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    white-space: pre-wrap; /* Preserve line breaks */
+}
+
+.right--panel h1, .right--panel h2, .right--panel h3 {
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+.right--panel code {
+    background-color: #282c34;
+    color: #61dafb;
+    padding: 4px 6px;
+    border-radius: 4px;
+    font-family: 'Fira Code', monospace;
+}
+
+.right--panel pre {
+    background-color: #282c34;
+    color: #ffffff;
+    padding: 12px;
+    border-radius: 8px;
+    overflow-x: auto;
+}
