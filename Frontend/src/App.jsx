@@ -12,12 +12,14 @@ function App() {
 
   const [prompt, setprompt] = useState(`function sum() { return 1 + 1; }`);
   const [response, setResponse] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     Prism.highlightAll();
   }, [])
 
   async function codeReview() {
+    setLoading(true);
     try {
       const responseFromServerAi = await axios.post('https://bug-buster-v1.onrender.com/ai/get-reviewed', { prompt })
       console.log(`responseFromServerAi.data.response: ${responseFromServerAi.data.response}`);
@@ -26,7 +28,19 @@ function App() {
       console.error("Error in codeReview:", err);
       alert("An error occurred while processing your request. Please try again.");
       console.error("Error details:", err); 
+    } finally {
+      setLoading(false);
     }
+  }
+
+  function Loader() {
+    return (
+      <div className='Loader'>
+        <div className="spinner">
+          <p>Reviewing your code...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -54,10 +68,14 @@ function App() {
         </div>
         <div className="right--panel">
 
-        <MarkdownHooks 
-          rehypePlugins={[rehypeStarryNight]}>
+        { loading ? (
+          <Loader />
+        ) : ( 
+          <MarkdownHooks 
+            rehypePlugins={[rehypeStarryNight]}>
             {response}
-        </MarkdownHooks>
+          </MarkdownHooks>
+        )}
         </div>
       </main>
   )
