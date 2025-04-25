@@ -20,8 +20,10 @@ function App() {
   async function codeReview() {
     try {
       const responseFromServerAi = await axios.post('https://bug-buster-v1.onrender.com/ai/get-reviewed', { prompt })
+      const { message, suggestion } = responseFromServerAi.data;
+
       console.log(responseFromServerAi.data.response);
-      setResponse(responseFromServerAi.data.response);
+      setResponse(`${message} \n\n ${suggestion}`);
     } catch(err) {
       console.error("Error in codeReview:", err);
       alert("An error occurred while processing your request. Please try again.");
