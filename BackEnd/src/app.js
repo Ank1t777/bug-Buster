@@ -6,7 +6,14 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors()); // Use CORS middleware to allow cross-origin requests
+//configuring CORS to allow cross-origin requests only from vercel
+const corsOptions = {
+    origin: 'https://bug-buster-two.vercel.app/',
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+app.use(corsOptions); // Use CORS middleware to allow cross-origin requests
 
 // Add your middleware, routes, etc.
 app.use(express.json()); // Middleware to parse JSON bodies
