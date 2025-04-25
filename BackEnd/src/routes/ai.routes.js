@@ -6,17 +6,23 @@ router.post('/get-reviewed', async (req, res) => {
     const { prompt } = req.body;
 
     // Simulate AI response (replace this with your actual AI logic)
-    const suggestion = `The function \`sum\` is a good start, but let's make it more flexible. Right now, it only adds \`1 + 1\`. What if we wanted to add other numbers? Here's how you can modify it to accept arguments, making it more reusable:
-    
+    const suggestion = `
+**Here's an improved version of your code:**
+
 \`\`\`javascript
+/**
+ * Sums two numbers.
+ * @param {number} a The first number.
+ * @param {number} b The second number.
+ * @returns {number} The sum of a and b.
+ */
 function sum(a, b) {
     return a + b;
 }
 \`\`\`
 
-Now you can call it like \`sum(5, 3)\` or \`sum(10, 20)\`. Much more useful, right? 😉`;
+Now your function is more reusable and includes proper documentation! 😊`;
 
-    // Return a conversational response
     res.json({
         message: "Here's a suggestion to improve your code:",
         suggestion: suggestion,
