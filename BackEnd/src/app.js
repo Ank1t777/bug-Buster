@@ -13,7 +13,7 @@ const corsOptions = {
     allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
-app.use(corsOptions); // Use CORS middleware to allow cross-origin requests
+app.use(cors(corsOptions)); // Use CORS middleware to allow cross-origin requests
 
 // Add your middleware, routes, etc.
 app.use(express.json()); // Middleware to parse JSON bodies
