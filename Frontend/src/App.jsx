@@ -23,6 +23,9 @@ function App() {
     try {
       const responseFromServerAi = await axios.post('https://bug-buster-v1.onrender.com/ai/get-reviewed', { prompt })
       const { message } = responseFromServerAi.data;
+      if(!message) {
+        throw new Error("No message received from server");
+      }
       console.log(`responseFromServerAi.data.response: ${responseFromServerAi.data.response}`);
       setResponse(`${message}`)
       setResponse(responseFromServerAi.data.response);
