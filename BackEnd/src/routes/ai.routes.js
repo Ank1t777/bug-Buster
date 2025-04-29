@@ -1,5 +1,5 @@
 import express from 'express';
-import { generateResponse } from '../services/ai.service';
+import { getReviewed } from '../controllers/ai.controller.js';
 
 const router = express.Router();
 
@@ -7,7 +7,8 @@ router.post('/get-reviewed', async (req, res) => {
     const { prompt } = req.body;
 
     try {
-        const aiResponse = await generateResponse(prompt);
+        // const aiResponse = await generateResponse(prompt);
+        const aiResponse = await getReviewed(prompt);
         res.json({
             response: aiResponse,
         });
@@ -17,7 +18,9 @@ router.post('/get-reviewed', async (req, res) => {
             error: 'An error occurued while processing your request.',
         });
     }
-}
+});
+
+export default router;
 
     // Simulate language detection (replace with actual logic if available)
 //     const detectedLanguage = 'javascript'; // Example: dynamically detect the language
@@ -47,5 +50,3 @@ router.post('/get-reviewed', async (req, res) => {
 // `,
 //     });
 // });
-
-export default router;
