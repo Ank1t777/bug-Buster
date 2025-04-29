@@ -28,5 +28,9 @@ app.use(express.json()); // Middleware to parse JSON bodies
 //register the ai routes
 app.use('/ai', aiRoutes);
 
+app.post('/', (req, res) => {
+    res.send('Hello from Bug Buster API!');
+})
+
 
 export default app; // Ensure this line exists

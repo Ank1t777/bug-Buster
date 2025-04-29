@@ -1,5 +1,5 @@
 import express from 'express';
-import { getReviewed } from '../controllers/ai.controller.js';
+import { generateResponse } from '../services/ai.service.js'; 
 
 const router = express.Router();
 
@@ -7,8 +7,7 @@ router.post('/get-reviewed', async (req, res) => {
     const { prompt } = req.body;
 
     try {
-        // const aiResponse = await generateResponse(prompt);
-        const aiResponse = await getReviewed(prompt);
+        const aiResponse = await generateResponse(prompt);
         res.json({
             response: aiResponse,
         });
