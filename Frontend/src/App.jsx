@@ -22,12 +22,13 @@ function App() {
     setLoading(true);
     try {
       const responseFromServerAi = await axios.post('https://bug-buster-v1.onrender.com/ai/get-reviewed', { prompt })
-      const { message } = responseFromServerAi.data;
-      if(!message) {
+      const { response } = responseFromServerAi.data;
+      console.log("responseFromServerAi.data:", responseFromServerAi.data);
+      if( !response ) {
         throw new Error("No message received from server");
       }
       console.log(`responseFromServerAi.data.response: ${responseFromServerAi.data.response}`);
-      setResponse(`${message}`)
+      setResponse(`${response}`)
       setResponse(responseFromServerAi.data.response);
     } catch(err) {
       console.error("Error in codeReview:", err);
