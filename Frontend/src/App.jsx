@@ -43,8 +43,8 @@ function App() {
     return (
       <div className='Loader'>
         <div className="spinner">
-          <p>Reviewing your code...</p>
         </div>
+          <p>Reviewing your code...</p>
       </div>
     );
   }

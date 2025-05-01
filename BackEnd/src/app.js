@@ -9,7 +9,7 @@ const app = express();
 //configuring CORS to allow cross-origin requests only from vercel
 const corsOptions = {
     origin: (origin, callback) => {
-        const allowedOrigins = ['https://bug-buster-two.vercel.app'];
+        const allowedOrigins = ['https://bug-buster-two.vercel.app', 'http://localhost:5173'];
         if (allowedOrigins.includes(origin) || !origin) {
             callback(null, true); // Allow the request
         } else {
@@ -28,9 +28,5 @@ app.use(express.json()); // Middleware to parse JSON bodies
 //register the ai routes
 app.use('/ai', aiRoutes);
 
-app.post('/', (req, res) => {
-    res.send('Hello from Bug Buster API!');
-})
 
-
-export default app; // Ensure this line exists
+export default app; 
