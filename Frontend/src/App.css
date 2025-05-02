@@ -23,6 +23,7 @@ main .right--panel {
   height: 100%;
   flex-basis: 50%;
   border-radius: 0.5rem;
+  padding: 1rem;
 }
 
 .left--panel, .right--panel, .prompt {
