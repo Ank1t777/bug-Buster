@@ -121,7 +121,7 @@ export async function generateResponse(prompt) {
       },
     });
 
-    return response.text.replace(/\n/g, ''); // Remove HTML tags;
+    return response.text; // Remove HTML tags;
   } catch (error) {
     console.error("❌ Error in generateResponse:", error);
     throw error;
