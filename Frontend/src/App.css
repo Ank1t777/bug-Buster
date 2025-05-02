@@ -51,6 +51,10 @@ pre[class*="language-javascript"] {
   border-radius: 0.5rem;
 }
 
+.review--button { 
+  margin: 1rem;
+}
+
 main .left--panel .review--button {
   position: absolute;
   bottom: 1rem;
