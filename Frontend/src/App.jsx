@@ -6,6 +6,7 @@ import "prismjs/components/prism-javascript";
 import { useState, useEffect } from 'react'
 import {MarkdownHooks} from 'react-markdown'
 import rehypeStarryNight from 'rehype-starry-night'
+import rehypeRaw from 'rehype-raw';
 import axios from 'axios';
 
 function App() {
@@ -78,7 +79,7 @@ function App() {
           <Loader />
         ) : ( 
           <MarkdownHooks 
-            rehypePlugins={[rehypeStarryNight]}>
+            rehypePlugins={[rehypeStarryNight, rehypeRaw]}>
             {response}
           </MarkdownHooks>
         )}
