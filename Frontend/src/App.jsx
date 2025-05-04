@@ -21,10 +21,16 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    Prism.highlightAll();
+    // Prism.highlightAll();
   }, [])
 
   async function codeReview() {
+    if(responseCache.has(prompt)) {
+      console.log("Cache hit for prompt:", prompt);
+      setResponse(responseCache.get(prompt));
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     try { 
       // const responseFromServerAi = await axios.post('https://bug-buster-v1.onrender.com/ai/get-reviewed', { prompt })
@@ -32,46 +38,27 @@ function App() {
       // console.log("responseFromServerAi.data:", responseFromServerAi.data);
       // if( !response ) {
       //   throw new Error("No message received from server");
-      if(responseCache.has(prompt)) {
-        console.log("Cache hit for prompt:", prompt);
-        setResponse(responseCache.get(prompt));
-        setLoading(false);
-        return;
+      const responseFromServerAi = await axios.post('https://bug-buster-v1.onrender.com/ai/get-reviewed', { prompt });
+      const { response } = responseFromServerAi.data;
+
+      if(!response) {
+        throw new Error("No message received from server");
       }
-        const responseFromServerAi = await axios.post('https://bug-buster-v1.onrender.com/ai/get-reviewed', { prompt });
-        const { response } = responseFromServerAi.data;
 
-        if(!response) {
-          throw new Error("No message received from server");
-        }
+      //cache the rsponse for recording the previous prompts given by the user
+      responseCache.set(prompt, response);
 
-        //cache the rsponse for recording the previous prompts given by the user
-        responseCache.set(prompt, response);
-
-        //update the state with the response
-        setResponse(response);
-
-      // console.log(`responseFromServerAi.data.response: ${responseFromServerAi.data.response}`);
-      // setResponse(`${response}`)
-      // setResponse(responseFromServerAi.data.response);
-    } catch(err) {
-      console.error("Error in codeReview:", err);
-      alert("An error occurred while processing your request. Please try again.");
-      console.error("Error details:", err); 
-    } finally {
-      setLoading(false);
-    }
+      //update the state with the response
+      setResponse(response);
+      } catch(err) {
+        console.error("Error in codeReview:", err);
+        alert("An error occurred while processing your request. Please try again.");
+        console.error("Error details:", err); 
+      } finally {
+        setLoading(false);
+      }
   }
 
-  // function Loader() {
-  //   return (
-  //     <div className='Loader'>
-  //       <div className="spinner">
-  //       </div>
-  //         <p>Reviewing your code...</p>
-  //     </div>
-  //   );
-  // }
   const Loader = memo(() => {
     return(
       <div className="Loader">
