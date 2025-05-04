@@ -73,7 +73,7 @@ function App() {
 
   const RenderReviewedCode = memo(({ response }) => {
     return (
-      <Suspense fallback={<Loader />}>
+      <Suspense fallback={<div>Just a moment...</div>}>
         <MarkdownHooks rehypePlugins={[rehypeStarryNight, rehypeRaw]}>
           {response}
         </MarkdownHooks>
