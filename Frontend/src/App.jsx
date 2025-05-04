@@ -1,13 +1,14 @@
-import './App.css'
-import Prism from "prismjs"
-import Editor from "react-simple-code-editor"
-import "prismjs/themes/prism-tomorrow.css"
+import './App.css';
+import Prism from "prismjs";
+import Editor from "react-simple-code-editor";
+import "prismjs/themes/prism-tomorrow.css";
 import "prismjs/components/prism-javascript";
-import { useState, useEffect, lazy, Suspense, memo } from 'react'
-// import { MarkdownHooks } from 'react-markdown'
-import rehypeStarryNight from 'rehype-starry-night'
+import { useState, useEffect, lazy, Suspense, memo, useMemo } from 'react';
+import rehypeStarryNight from 'rehype-starry-night';
 import rehypeRaw from 'rehype-raw';
 import axios from 'axios';
+import { debounce } from 'lodash';
+import { useCallback } from 'react';
 
 //Lazy load the Markdown component for performance optimization
 const MarkdownHooks = lazy(() => import('react-markdown'));
@@ -24,21 +25,16 @@ function App() {
     // Prism.highlightAll();
   }, [])
 
-  async function codeReview() {
-    if(responseCache.has(prompt)) {
-      console.log("Cache hit for prompt:", prompt);
-      setResponse(responseCache.get(prompt));
+  const codeReview = useCallback(async function codeReview(currentPrompt) {
+    if(responseCache.has(currentPrompt)) {
+      console.log("Cache hit for prompt:", currentPrompt);
+      setResponse(responseCache.get(currentPrompt));
       setLoading(false);
       return;
     }
     setLoading(true);
     try { 
-      // const responseFromServerAi = await axios.post('https://bug-buster-v1.onrender.com/ai/get-reviewed', { prompt })
-      // const { response } = responseFromServerAi.data;
-      // console.log("responseFromServerAi.data:", responseFromServerAi.data);
-      // if( !response ) {
-      //   throw new Error("No message received from server");
-      const responseFromServerAi = await axios.post('https://bug-buster-v1.onrender.com/ai/get-reviewed', { prompt });
+      const responseFromServerAi = await axios.post('https://bug-buster-v1.onrender.com/ai/get-reviewed', { prompt: currentPrompt });
       const { response } = responseFromServerAi.data;
 
       if(!response) {
@@ -46,7 +42,7 @@ function App() {
       }
 
       //cache the rsponse for recording the previous prompts given by the user
-      responseCache.set(prompt, response);
+      responseCache.set(currentPrompt, response);
 
       //update the state with the response
       setResponse(response);
@@ -57,7 +53,9 @@ function App() {
       } finally {
         setLoading(false);
       }
-  }
+  }, []);
+
+  const codeReviewDebounced = useMemo(() => debounce(codeReview, 1000), [codeReview]);
 
   const Loader = memo(() => {
     return(
@@ -73,7 +71,7 @@ function App() {
 
   const RenderReviewedCode = memo(({ response }) => {
     return (
-      <Suspense fallback={<div>Just a moment...</div>}>
+      <Suspense fallback={<Loader />}>
         <MarkdownHooks rehypePlugins={[rehypeStarryNight, rehypeRaw]}>
           {response}
         </MarkdownHooks>
@@ -105,7 +103,7 @@ function App() {
            />
           </div>
           <div
-            onClick={codeReview} 
+            onClick={() => codeReviewDebounced(prompt)} 
             className="review--button">
               Review
           </div>
