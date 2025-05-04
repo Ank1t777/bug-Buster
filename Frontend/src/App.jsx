@@ -31,7 +31,7 @@ function App() {
       setLoading(false);
       return;
     }
-    setLoading(true);
+    // setLoading(true);
     try { 
       // const responseFromServerAi = await axios.post('https://bug-buster-v1.onrender.com/ai/get-reviewed', { prompt })
       // const { response } = responseFromServerAi.data;
