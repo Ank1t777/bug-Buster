@@ -17,7 +17,8 @@ const responseCache = new Map();
 
 function App() {
 
-  const [prompt, setprompt] = useState(`function sum() { return 1 + 1; }`);
+  const [prompt, setprompt] = useState(`/* eg: review my code 
+function sum() { return 1 + 1; } /*`);
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
 
