@@ -3,13 +3,14 @@ import Prism from "prismjs";
 import Editor from "react-simple-code-editor";
 import "prismjs/themes/prism-tomorrow.css";
 import "prismjs/components/prism-javascript";
-import { useState, useEffect, lazy, Suspense, memo, useMemo } from 'react';
-// import rehypeStarryNight from 'rehype-starry-night';
+import { useState, lazy, Suspense, memo, useMemo } from 'react';
+import rehypeStarryNight from 'rehype-starry-night';
 import rehypeRaw from 'rehype-raw';
-import { getHighlighter } from 'rehype-starry-night'
+// import { getHighlighter } from 'rehype-starry-night'
 import axios from 'axios';
 import { debounce } from 'lodash';
 import { useCallback } from 'react';
+import { useEffect } from 'react';
 
 //Lazy load the Markdown component for performance optimization
 const MarkdownHooks = lazy(() => import('react-markdown'));
@@ -22,17 +23,19 @@ function App() {
 function sum() { return 1 + 1; } /*`);
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
-  const [rehypePlugins, setRehypePlugins] = useState([rehypeRaw])
+  const [rehypePlugins, setRehypePlugins] = useState([rehypeRaw, rehypeStarryNight])
 
-  useEffect(() => {
-    // Prism.highlightAll();
-    async function initializeRehypePlugins() {
-      const highlighter = await getHighlighter();
-      setRehypePlugins([rehypeRaw, highlighter])
-    }
-    initializeRehypePlugins();
-  }, [])
-
+  // useEffect(() => {
+  //   // Prism.highlightAll();
+  //   async function initializeRehypePlugins() {
+  //     const highlighter = await getHighlighter();
+  //     setRehypePlugins([rehypeRaw, highlighter])
+  //   }
+  //   initializeRehypePlugins();
+  // }, [])
+useEffect(() => {
+  setRehypePlugins([rehypeRaw, rehypeStarryNight]);
+}, [rehypePlugins]);
   const codeReview = useCallback(async function codeReview(currentPrompt) {
     if(responseCache.has(currentPrompt)) {
       console.log("Cache hit for prompt:", currentPrompt);
