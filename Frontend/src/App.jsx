@@ -4,8 +4,9 @@ import Editor from "react-simple-code-editor";
 import "prismjs/themes/prism-tomorrow.css";
 import "prismjs/components/prism-javascript";
 import { useState, useEffect, lazy, Suspense, memo, useMemo } from 'react';
-import rehypeStarryNight from 'rehype-starry-night';
+// import rehypeStarryNight from 'rehype-starry-night';
 import rehypeRaw from 'rehype-raw';
+import { getHighlighter } from 'rehype-starry-night'
 import axios from 'axios';
 import { debounce } from 'lodash';
 import { useCallback } from 'react';
@@ -21,9 +22,15 @@ function App() {
 function sum() { return 1 + 1; } /*`);
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
+  const [rehypePlugins, setRehypePlugins] = useState([rehypeRaw])
 
   useEffect(() => {
     // Prism.highlightAll();
+    async function initializeRehypePlugins() {
+      const highlighter = await getHighlighter();
+      setRehypePlugins([rehypeRaw, highlighter])
+    }
+    initializeRehypePlugins();
   }, [])
 
   const codeReview = useCallback(async function codeReview(currentPrompt) {
@@ -73,7 +80,7 @@ function sum() { return 1 + 1; } /*`);
   const RenderReviewedCode = memo(({ response }) => {
     return (
       <Suspense fallback={<Loader />}>
-        <MarkdownHooks rehypePlugins={[rehypeStarryNight, rehypeRaw]}>
+        <MarkdownHooks rehypePlugins={rehypePlugins}>
           {response}
         </MarkdownHooks>
       </Suspense>
