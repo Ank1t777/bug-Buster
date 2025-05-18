@@ -7,7 +7,7 @@ import 'prismjs/themes/prism.css';
 //import rehypeRaw from 'rehype-raw';
 import axios from 'axios';
 import debounce from 'lodash/debounce';
-import 'highlight.js/styles/atom-one-light.css';
+// import 'highlight.js/styles/atom-one-light.css';
 import rehypeRaw from 'rehype-raw';
 import rehypeStarryNight from 'rehype-starry-night';
 const Editor = lazy(() => import("react-simple-code-editor"));
