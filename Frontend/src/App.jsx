@@ -1,109 +1,172 @@
 import './App.css';
-import Prism from "prismjs";
-import Editor from "react-simple-code-editor";
-import "prismjs/themes/prism-tomorrow.css";
-import "prismjs/components/prism-javascript";
-import { useState, lazy, Suspense, memo, useMemo } from 'react';
-import rehypeStarryNight from 'rehype-starry-night';
-import rehypeRaw from 'rehype-raw';
-// import { getHighlighter } from 'rehype-starry-night'
+import Prism from 'prismjs'
+import { useState, lazy, Suspense, memo, useMemo, useCallback, useRef, useEffect } from 'react';
+import 'prismjs/components/prism-clike';
+import 'prismjs/components/prism-javascript';
+import 'prismjs/themes/prism.css';
+//import rehypeRaw from 'rehype-raw';
 import axios from 'axios';
-import { debounce } from 'lodash';
-import { useCallback } from 'react';
-import { useEffect } from 'react';
-
-//Lazy load the Markdown component for performance optimization
+import debounce from 'lodash/debounce';
+import 'highlight.js/styles/atom-one-light.css';
+import rehypeRaw from 'rehype-raw';
+import rehypeStarryNight from 'rehype-starry-night';
+const Editor = lazy(() => import("react-simple-code-editor"));
 const MarkdownHooks = lazy(() => import('react-markdown'));
 
-const responseCache = new Map();
+
 
 function App() {
-
-  const [prompt, setprompt] = useState(`/* eg: review my code 
-function sum() { return 1 + 1; } /*`);
+  const [prompt, setPrompt] = useState(`/* eg: review my code 
+function sum() { return 1 + 1; } */`);
   const [response, setResponse] = useState("");
+  const [customLanguage, setCustomLanguage] = useState('');
   const [loading, setLoading] = useState(false);
-  const [rehypePlugins, setRehypePlugins] = useState([rehypeRaw, rehypeStarryNight])
+  const supportedLanguages = ['javascript', 'python', 'java', 'typescript', 'rust'];
+  const [showCustomInput, setShowCustomInput] = useState(false);
+  const customInputRef = useRef(null);
+  const importedLanguages = useRef({});
+  const [language, setLanguage] = useState('javascript');
+  const [rehypePlugins, setRehypePlugins] = useState([]);
 
+
+  useEffect(() => {
+
+    const initializeRehypePlugins = async () => {
+      const starryNight = await rehypeStarryNight();
+      setRehypePlugins([rehypeRaw, starryNight]);
+    };
+
+    initializeRehypePlugins();
+
+  const langToLoad = language === 'custom' ? customLanguage : language;
+
+  if(!langToLoad || importedLanguages.current[langToLoad]) {
+    return;
+  }
+   import(`prismjs/components/prism-${langToLoad}.js`)
+    .then(() => {
+      importedLanguages.current[langToLoad] = true;
+      console.log(`${langToLoad} loaded`);
+    })
+    .catch(() => {
+      console.warn(`Could not load: ${langToLoad}`);
+    });
+}, [language, customLanguage]);
+  //const [rehypePlugins, setRehypePlugins] = useState([rehypeRaw]);
+
+  // Initialize rehype plugins with Starry Night
   // useEffect(() => {
-  //   // Prism.highlightAll();
-  //   async function initializeRehypePlugins() {
-  //     const highlighter = await getHighlighter();
-  //     setRehypePlugins([rehypeRaw, highlighter])
-  //   }
+  //   const initializeRehypePlugins = async () => {
+  //     const starryNightPlugin = await rehypeStarryNight();
+  //     setRehypePlugins([rehypeRaw, starryNightPlugin]);
+  //   };
   //   initializeRehypePlugins();
-  // }, [])
-useEffect(() => {
-  setRehypePlugins([rehypeRaw, rehypeStarryNight]);
-}, [rehypePlugins]);
-  const codeReview = useCallback(async function codeReview(currentPrompt) {
-    if(responseCache.has(currentPrompt)) {
-      console.log("Cache hit for prompt:", currentPrompt);
-      setResponse(responseCache.get(currentPrompt));
-      setLoading(false);
-      return;
-    }
+  //   console.log(Prism);
+  // }, []);
+
+  // Function to handle code review
+  const codeReview = useCallback(async (currentPrompt) => {
     setLoading(true);
-    try { 
+    try {
       const responseFromServerAi = await axios.post('https://bug-buster-v1.onrender.com/ai/get-reviewed', { prompt: currentPrompt });
       const { response } = responseFromServerAi.data;
 
-      if(!response) {
+      if (!response) {
         throw new Error("No message received from server");
       }
 
-      //cache the rsponse for recording the previous prompts given by the user
-      responseCache.set(currentPrompt, response);
-
-      //update the state with the response
       setResponse(response);
-      } catch(err) {
-        console.error("Error in codeReview:", err);
-        alert("An error occurred while processing your request. Please try again.");
-        console.error("Error details:", err); 
-      } finally {
-        setLoading(false);
-      }
+    } catch (err) {
+      console.error("Error in codeReview:", err);
+      alert("An error occurred while processing your request. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
+  const handleSelectLanguage = (e) => {
+  const selectedLanguage = e.target.value;
+  setLanguage(selectedLanguage);
+
+  if (selectedLanguage === "custom") {
+    setShowCustomInput(true);
+    setPrompt(`Enter your code in ${customLanguage} language`);
+    setCustomLanguage('');
+    setTimeout(() => customInputRef.current?.focus(), 0);
+  } else {
+    setShowCustomInput(false);
+    setCustomLanguage('');
+
+    // Optionally prefill prompt
+    switch (selectedLanguage) {
+      case 'javascript':
+        setPrompt(`/* eg: review my code function sum() { return 1 + 1; } */`);
+        break;
+      case 'python':
+        setPrompt(`/* eg: review my code def sum(): return 1 + 1 */`);
+        break;
+      case 'java':
+        setPrompt(`/* eg: review my code public class Main { public static void main(String[] args) { System.out.println("Hello World"); } } */`);
+        break;
+      case 'typescript':
+        setPrompt(`/* eg: review my code function sum(): number { return 1 + 1; } */`);
+        break;
+      case 'rust':
+        setPrompt(`/* eg: review my code fn main() { println!("Hello, world!"); } */`);
+        break;
+    }
+  }
+};
+
+
+  const applySelectedLanguage = () => {
+    if(customLanguage.trim()) {
+      setLanguage(customLanguage.trim());
+      showCustomInput(false);
+    }
+  }
+
+  const onEnterKey = (e) => {
+    if(e.key === 'Enter') {
+      applySelectedLanguage();
+    }
+  }
+
+  // Debounced version of the code review function
   const codeReviewDebounced = useMemo(() => debounce(codeReview, 1000), [codeReview]);
 
-  const Loader = memo(() => {
-    return(
-      <div className="Loader">
-        <div className="spinner">
-          <div>
-            <p>Reviewing your code...</p>
-          </div>
-        </div>
+  // Loader component
+  const Loader = memo(() => (
+    <div className="Loader">
+      <div className="spinner">
+      </div>
+      <p>Reviewing your code...</p>
     </div>
-    )
-  });
+  ));
 
-  const RenderReviewedCode = memo(({ response }) => {
-    return (
-      <Suspense fallback={<Loader />}>
-        <MarkdownHooks rehypePlugins={rehypePlugins}>
-          {response}
-        </MarkdownHooks>
-      </Suspense>
-    );
-  },
-  (prevProps, nextProps) => {
-    return prevProps.response === nextProps.response;
-  // Only re-render if the response prop has changed
-  // This prevents unnecessary re-renders and improves performance
-  }
-);
+  // Component to render the reviewed code
+  const RenderReviewedCode = memo(({ response }) => (
+    <Suspense fallback={<Loader />}>
+      {/* <MarkdownHooks rehypePlugins={rehypePlugins}> */}
+        <MarkdownHooks rehypePlugins={[rehypePlugins]}>
+        {response}
+      </MarkdownHooks>
+    </Suspense>
+  ), (prevProps, nextProps) => prevProps.response === nextProps.response);
 
   return (
-      <main>
-        <div className="left--panel">
-          <div className="prompt">
-           <Editor
+    <main>
+      <div className="left--panel">
+        <div className="prompt">
+          <Suspense fallback={<Loader />}>
+            <Editor
               value={prompt}
-              onValueChange={code => setprompt(code)}
-              highlight={code => Prism.highlight(code, Prism.languages.js)}
+              onValueChange={(code) => setPrompt(code || '')}
+              highlight={(code) => {
+                const lang = language === "custom" ? customLanguage : language;
+                const grammar = Prism.languages[lang] || Prism.languages.javascript;
+                return Prism.highlight(code, grammar, lang);
+              }}
               padding={10}
               style={{
                 fontFamily: '"Fira code", "Fira Mono", monospace',
@@ -111,23 +174,53 @@ useEffect(() => {
                 backgroundColor: "#282c34",
                 color: "#ffffff"
               }}
-           />
-          </div>
-          <div
-            onClick={() => codeReviewDebounced(prompt)} 
-            className="review--button">
-              Review
-          </div>
+            />
+          </Suspense>
         </div>
-        <div className="right--panel">
+        <div className="supported--languages">
+              <select onChange = {handleSelectLanguage} className="select--language">
+                {
+                  supportedLanguages.map(lang => (
+                    <option key={lang} value={lang}>{lang}</option>
+                  ))
+                }
+                <option key="custom" value="custom">Other</option>
+              </select>
 
-        { loading ? (
-          <Loader />
-        ) : ( 
-          <RenderReviewedCode response = { response } />
-        )}
+              {
+                  showCustomInput && (
+                    <div className="custom--lang--wrapper">
+                      <input
+                        type="text"
+                        placeholder="Enter languguage"
+                        value={customLanguage}
+                        onChange={(e) => setCustomLanguage(e.target.value)}
+                        className="custom--input"
+                        onKeyDown={(e) => { onEnterKey(e)}
+                        }
+                      />
+                      <button
+                        className="apply--custom--lang"
+                        onClick={applySelectedLanguage}
+                        >
+                        Apply
+                      </button>
+                    </div>
+                  )
+                }
         </div>
-      </main>
+
+        <div
+          onClick={() => codeReviewDebounced(prompt)}
+          className="review--button"
+        >
+          Review
+        </div>
+      </div>
+      <div className="right--panel">
+        {loading ? <Loader /> : <RenderReviewedCode response={response} />}
+      </div>
+    </main>
   );
 }
 
