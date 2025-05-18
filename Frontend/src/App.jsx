@@ -90,7 +90,6 @@ function sum() { return 1 + 1; } */`);
 
   if (selectedLanguage === "custom") {
     setShowCustomInput(true);
-    setPrompt(`Enter your code in ${customLanguage} language`);
     setCustomLanguage('');
     setTimeout(() => customInputRef.current?.focus(), 0);
   } else {
@@ -122,7 +121,8 @@ function sum() { return 1 + 1; } */`);
   const applySelectedLanguage = () => {
     if(customLanguage.trim()) {
       setLanguage(customLanguage.trim());
-      showCustomInput(false);
+      setPrompt(`/* Enter your code in ${customLanguage} language */`);
+      setShowCustomInput(false);
     }
   }
 

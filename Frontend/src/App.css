@@ -69,6 +69,12 @@ main .left--panel .review--button {
   user-select: none;
 }
 
+.review--button, .apply--custom--lang {
+    background-color: rgb(240, 169, 64);
+    font-weight: bold;
+    color: black;
+}
+
 main .left--panel .review--button:hover {
   background-color: white;
   color: black;
@@ -337,4 +343,12 @@ main .right--panel {
   .right--panel {
     font-size: 18px; /* Slightly larger font for desktops */
   }
+}
+
+.select--language, .custom--input {
+  display: flex;
+  gap: 1rem;
+  margin: 1.5rem 0;
+  height: 2.3rem;
+  border-radius: 0.5rem;
 }
