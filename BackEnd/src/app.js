@@ -9,7 +9,7 @@ const app = express();
 //configuring CORS to allow cross-origin requests only from vercel
 const corsOptions = {
     origin: (origin, callback) => {
-        const allowedOrigins = ['https://bug-buster-sigma.vercel.app/', 'http://localhost:5173'];
+        const allowedOrigins = ['https://bug-buster-sigma.vercel.app', 'http://localhost:5173'];
         if (allowedOrigins.includes(origin) || !origin) {
             callback(null, true); // Allow the request
         } else {
